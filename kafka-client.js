@@ -8,7 +8,8 @@ function getKafkaClientFactory(kafkaConfig) {
       await producer.connect();
       return Promise.resolve(producer);
     },
-    getConsumer: async (consumerConfig = {}) => {
+    getConsumer: async (consumerConfig = {},groupId="randomGroup") => {
+      consumerConfig.groupId=groupId
       const consumer = kafka.consumer(consumerConfig);
       await consumer.connect();
       return Promise.resolve(consumer);
