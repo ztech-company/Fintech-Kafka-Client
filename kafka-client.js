@@ -1,5 +1,6 @@
+const { Kafka } = require("kafkajs");
+
 function getKafkaClientFactory(kafkaConfig) {
-  const { Kafka } = require("kafkajs");
   const kafka = new Kafka(kafkaConfig);
 
   return {

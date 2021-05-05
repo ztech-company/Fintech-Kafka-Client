@@ -1,13 +1,15 @@
-const { getKafkaClientFactory } = require("./kafka-client");
-const { getConfig } = require("./config-getter");
+require("dotenv").config();
 
-const vaultName = process.env.vaultName ? process.env.vaultName : "giovanni";
-const secretName = process.env.secretName ? process.env.secretName : "DEV-KEY";
+const { getKafkaClientFactory } = require("./kafka-client");
+const KeyVault = require("keyvault-client");
+
+const vaultName = process.env.VAULT_NAME || "gps-dev";
+const secretName = process.env.SECRET_NAME || "KAFKA-AUTH";
 
 const run = async () => {
-  const kafkaFactory = getKafkaClientFactory(
-    await getConfig(vaultName, secretName)
-  );
+  const kafkaConfig = await KeyVault(vaultName, secretName).catch(e=>({brokers: ["localhost:9092"]}));
+  
+  const kafkaFactory = getKafkaClientFactory(kafkaConfig);
 
   const producer = await kafkaFactory.getProducer();
   const consumer = await kafkaFactory.getConsumer({ groupId: "test-group" });
